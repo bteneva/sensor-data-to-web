@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мониторинг Бобов дол - Големо село</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; margin: 30px; color: #333; }
+        .container { max-width: 1100px; margin: auto; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); margin-bottom: 25px; }
+        h2 { margin-top: 0; color: #2c3e50; text-align: center; }
+        h3 { margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #ddd; }
+        .alert-title { color: #e74c3c; border-color: #e74c3c; }
+        .recent-title { color: #3498db; border-color: #3498db; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: 600; color: #555; }
+
+        /* Цветови индекси за редовете според замърсяването */
+        .row-good { background-color: #f0fdf4 !important; }      /* Зелено */
+        .row-moderate { background-color: #fffbeb !important; }  /* Жълто */
+        .row-poor { background-color: #fef2f2 !important; }      /* Червено */
+        .row-critical { background-color: #fde8e8 !important; border-left: 5px solid #e74c3c; } /* Тъмно червено */
+
+        .badge { background: #e74c3c; color: white; padding: 3px 8px; border-radius: 4px; font-size: 13px; font-weight: bold; }
+        .station-lbl { font-weight: bold; color: #2c3e50; background: #eaf2f8; padding: 5px 10px; border-radius: 6px; font-size: 13px; border: 1px solid #d4e6f1; }
+        .no-alerts { padding: 15px; text-align: center; color: #27ae60; font-weight: bold; background: #f0fdf4; border-radius: 6px; }
+        .update-ts { font-size: 12px; color: #888; text-align: center; margin-top: 10px; }
+
+        /* Стилизиране на стрелката за вятър */
+        .wind-container { display: inline-flex; align-items: center; gap: 6px; font-weight: bold; color: #2e4053; }
+        .wind-arrow { display: inline-block; font-size: 16px; transition: transform 0.3s ease; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="card">
+        <h2>⚠️ Граждански Мониторинг на Въздуха - с. Големо село</h2>
+        <p style="text-align:center; color:#666;">Паралелно проследяване на две независими измервателни станции около ТЕЦ-а</p>
+        <div id="last-updated-container" class="update-ts"></div>
+    </div>
+
+    <!-- ТАБЛИЦА 1: ПРЕВИШЕНИЯ -->
+    <div class="card">
+        <h3 class="alert-title">🚨 Извънредни превишения за последните 48 часа (Всички Станции)</h3>
+        <div id="alerts-container"></div>
+    </div>
+
+    <!-- ТАБЛИЦА 2: ПОСЛЕДНИ 15 -->
+    <div class="card">
+        <h3 class="recent-title">⏱️ Последни 15 замервания в реално време (Хронологичен поток)</h3>
+        <div id="recent-container"></div>
+    </div>
+
+</div>
+
+<script>
+    // Коригирана и фиксирана функция за форматиране на датата
+        // Оригиналната и напълно работеща функция за дата
+    function formatBulgarianDateTime(rawTimestamp) {
+        if (!rawTimestamp) return "";
+        let parts = rawTimestamp.split(' ');
+        let datePart = parts[0];
+        let timePart = parts[1] ? parts[1].substring(0, 5) : "";
+
+        if (datePart) {
+            let datePieces = datePart.split('-');
+            if (datePieces.length === 3) {
+                return `${datePieces[2]}.${datePieces[1]}.${datePieces[0]} г. &nbsp;|&nbsp; ⏱️ ${timePart} ч.`;
+            }
+        }
+        return rawTimestamp;
+    }
+
+    // Определяне на цвят спрямо нивата на прахови частици
+    function getRowColorClass(pm25, pm10) {
+        if (pm25 > 50 || pm10 > 100) return 'row-critical';
+        if (pm25 > 25 || pm10 > 50) return 'row-poor';
+        if (pm25 > 15 || pm10 > 30) return 'row-moderate';
+        return 'row-good';
+    }
+
+    // КОРИГИРАНА ФУНКЦИЯ: Вече чете Вашите реални записи като "Запад - Югозапад (З-ЮЗ)"
+    function getWindWidget(windStr) {
+        if (!windStr || windStr.trim() === "" || windStr.includes("Няма данни")) {
+            return `<div class="wind-container">💨 Няма данни</div>`;
+        }
+
+        let rotation = 0;
+        let upperStr = windStr.toUpperCase();
+
+        // Проверка по кратките съкращения в скобите от Вашата база данни
+        if (upperStr.includes("(С)")) rotation = -90;
+        else if (upperStr.includes("(СИ)")) rotation = -45;
+        else if (upperStr.includes("(И)")) rotation = 0;
+        else if (upperStr.includes("(ЮИ)")) rotation = 45;
+        else if (upperStr.includes("(Ю)")) rotation = 90;
+        else if (upperStr.includes("(ЮЗ)") || upperStr.includes("(З-ЮЗ)")) rotation = 135;
+        else if (upperStr.includes("(З)")) rotation = 180;
+        else if (upperStr.includes("(СЗ)")) rotation = -135;
+        // Допълнителна проверка за чист текст, ако форматът се промени
+        else if (upperStr.includes("СЕВЕР")) rotation = -90;
+        else if (upperStr.includes("ЮГ")) rotation = 90;
+        else if (upperStr.includes("ИЗТОК")) rotation = 0;
+        else if (upperStr.includes("ЗАПАД")) rotation = 180;
+
+        return `
+            <div class="wind-container">
+                <span class="wind-arrow" style="transform: rotate(${rotation}deg);">➔</span>
+                <span>${windStr}</span>
+            </div>
+        `;
+    }
+
+<!--    // Помощна функция за определяне на CSS клас според нивата на прах-->
+<!--    function getRowColorClass(pm25, pm10) {-->
+<!--        if (pm25 > 50 || pm10 > 100) return 'row-critical';-->
+<!--        if (pm25 > 25 || pm10 > 50) return 'row-poor';-->
+<!--        if (pm25 > 15 || pm10 > 30) return 'row-moderate';-->
+<!--        return 'row-good';-->
+<!--    }-->
+
+<!--    // Функция, която генерира HTML за посоката на вятъра и завърта иконата-стрелка (➔)-->
+<!--    function getWindWidget(windStr) {-->
+<!--        if (!windStr || windStr.includes("Няма данни")) {-->
+<!--            return `<div class="wind-container">💨 Няма данни</div>`;-->
+<!--        }-->
+
+<!--        let rotation = 0; // По подразбиране сочи Изток (0 градуса)-->
+<!--        let upperStr = windStr.toUpperCase();-->
+
+<!--        if (upperStr.includes("СЕВЕРЕН") || upperStr.includes(" С (")) rotation = -90;-->
+<!--        else if (upperStr.includes("СЕВЕРОИЗТОЧЕН") || upperStr.includes("СИ (")) rotation = -45;-->
+<!--        else if (upperStr.includes("ИЗТОЧЕН") || upperStr.includes(" И (")) rotation = 0;-->
+<!--        else if (upperStr.includes("ЮГОИЗТОЧЕН") || upperStr.includes("ЮИ (")) rotation = 45;-->
+<!--        else if (upperStr.includes("ЮЖЕН") || upperStr.includes(" Ю (")) rotation = 90;-->
+<!--        else if (upperStr.includes("ЮГОЗАПАДЕН") || upperStr.includes("ЮЗ (")) rotation = 135;-->
+<!--        else if (upperStr.includes("ЗАПАДЕН") || upperStr.includes(" З (")) rotation = 180;-->
+<!--        else if (upperStr.includes("СЕВЕРОЗАПАДЕН") || upperStr.includes("СЗ (")) rotation = -135;-->
+
+<!--        return `-->
+<!--            <div class="wind-container">-->
+<!--                <span class="wind-arrow" style="transform: rotate(${rotation}deg);">➔</span>-->
+<!--                <span>${windStr}</span>-->
+<!--            </div>-->
+<!--        `;-->
+<!--    }-->
+
+    function refreshDashboard() {
+        fetch('live.json?t=' + new Date().getTime())
+            .then(res => res.json())
+            .then(data => {
+
+                // 0. ОБНОВЯВАНЕ НА ЧАСА НА СИНХРОНИЗАЦИЯ
+                const updatedContainer = document.getElementById('last-updated-container');
+                if (data.last_updated) {
+                    updatedContainer.innerHTML = `Последно синхронизиране с базата: ${formatBulgarianDateTime(data.last_updated)}`;
+                }
+
+                // 1. РЕНДЕРИРАНЕ НА ТАБЛИЦА ПРЕВИШЕНИЯ
+                const alertsContainer = document.getElementById('alerts-container');
+                alertsContainer.innerHTML = '';
+
+                if (!data.alerts || data.alerts.length === 0) {
+                    alertsContainer.innerHTML = '<div class="no-alerts">🌱 През последните 48 часа няма замервания над екологичните норми на нито една станция.</div>';
+                } else {
+                    let htmlAlerts = `<table>
+                        <thead>
+                            <tr>
+                                <th>Станция</th>
+                                <th>Дата и час</th>
+                                <th>PM2.5 (Норма 25)</th>
+                                <th>PM10 (Норма 50)</th>
+                                <th>Посока на вятъра</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+                    data.alerts.forEach(p => {
+                        let pm25Display = p.pm25 > 25 ? `<span class="badge">${p.pm25} µg/m³</span>` : p.pm25 + " µg/m³";
+                        let pm10Display = p.pm10 > 50 ? `<span class="badge">${p.pm10} µg/m³</span>` : p.pm10 + " µg/m³";
+                        let stationName = p.station || "Неизвестна станция";
+                        let formattedTime = formatBulgarianDateTime(p.timestamp);
+                        let rowClass = getRowColorClass(p.pm25, p.pm10);
+                        let windHtml = getWindWidget(p.wind_dir);
+
+                        htmlAlerts += `<tr class="${rowClass}">
+                            <td><span class="station-lbl">📍 ${stationName}</span></td>
+                            <td><strong>${formattedTime}</strong></td>
+                            <td>${pm25Display}</td>
+                            <td>${pm10Display}</td>
+                            <td>${windHtml}</td>
+                        </tr>`;
+                    });
+                    htmlAlerts += '</tbody></table>';
+                    alertsContainer.innerHTML = htmlAlerts;
+                }
+
+                               // 2. РЕНДЕРИРАНЕ НА ПОСЛЕДНИТЕ 15 ЗАМЕРВАНИЯ
+                const recentContainer = document.getElementById('recent-container');
+                recentContainer.innerHTML = '';
+
+                if (!data.recent || data.recent.length === 0) {
+                    recentContainer.innerHTML = '<div class="no-alerts">Няма заредени замервания в базата.</div>';
+                } else {
+                    let htmlRecent = `<table>
+                        <thead>
+                            <tr>
+                                <th>Станция</th>
+                                <th>Дата и час</th>
+                                <th>PM2.5</th>
+                                <th>PM10</th>
+                                <th>Температура</th>
+                                <th>Влажност</th>
+                                <th>Налягане</th>
+                                <th>Посока на вятъра</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+                    data.recent.forEach(r => {
+                        let stationName = r.station || "Неизвестна станция";
+                        let formattedTime = formatBulgarianDateTime(r.timestamp);
+                        let rowClass = getRowColorClass(r.pm25, r.pm10);
+
+                        let pm25Style = r.pm25 > 25 ? `color: #e74c3c; font-weight: bold;` : `color: #27ae60;`;
+                        let pm10Style = r.pm10 > 50 ? `color: #e74c3c; font-weight: bold;` : `color: #27ae60;`;
+                        let windHtml = getWindWidget(r.wind_dir);
+
+                        htmlRecent += `
+                        <tr class="${rowClass}">
+                            <td><span class="station-lbl">📍 ${stationName}</span></td>
+                            <td>📅 ${formattedTime}</td>
+                            <td style="${pm25Style}">${r.pm25} µg/m³</td>
+                            <td style="${pm10Style}">${r.pm10} µg/m³</td>
+                            <td>🌡️ ${r.temp} °C</td>
+                            <td>💧 ${Math.round(r.humidity)} %</td>
+                            <td>🌐 ${r.pressure} hPa</td>
+                            <td>${windHtml}</td>
+                        </tr>`;
+                    });
+
+                    htmlRecent += '</tbody></table>';
+                    recentContainer.innerHTML = htmlRecent;
+                }
+
+            }).catch(e => console.error("Грешка при визуализация:", e));
+    }
+
+    // Стартиране на таблото
+    refreshDashboard();
+    setInterval(refreshDashboard, 5000);
+</script>
+</body>
+</html>
