@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca6ecf55-0532-41d5-bfbb-8ffb82d3a964" name="Changes" comment="New type of station added. Weather Api wind data added.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/PhpNodeEngine.java" afterDir="false" />
+    <list default="true" id="ca6ecf55-0532-41d5-bfbb-8ffb82d3a964" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/model/AirDataPoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/model/AirDataPoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/PhpNodeEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/PhpNodeEngine.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +30,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 2
@@ -80,6 +78,15 @@
       <option name="presentableId" value="Default" />
       <updated>1787243870454</updated>
     </task>
+    <task id="LOCAL-00001" summary="New type of station added. Weather Api wind data added.">
+      <option name="closed" value="true" />
+      <created>1787669996372</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1787669996372</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

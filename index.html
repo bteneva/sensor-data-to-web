@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мониторинг Бобов дол - Големо село</title>
+    <title>Мониторинг Бобов дол - Големо село - Дупница - Баланово - Шатрово</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; margin: 30px; color: #333; }
         .container { max-width: 1100px; margin: auto; }
@@ -28,16 +28,26 @@
         .update-ts { font-size: 12px; color: #888; text-align: center; margin-top: 10px; }
 
         /* Стилизиране на стрелката за вятър */
-        .wind-container { display: inline-flex; align-items: center; gap: 6px; font-weight: bold; color: #2e4053; }
-        .wind-arrow { display: inline-block; font-size: 16px; transition: transform 0.3s ease; }
+        .wind-container { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; font-weight: bold; color: #2e4053; }
+        .wind-arrow {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            transform-origin: 50% 50%;
+            transition: transform 0.3s ease;
+        }
+        .wind-speed { font-weight: 600; color: #1a5276; }
+        .wind-arrow-cell { text-align: center; }
+        .wind-arrow-cell .wind-arrow { width: 26px; height: 26px; }
     </style>
 </head>
 <body>
 <div class="container">
 
     <div class="card">
-        <h2>⚠️ Граждански Мониторинг на Въздуха - с. Големо село</h2>
-        <p style="text-align:center; color:#666;">Паралелно проследяване на две независими измервателни станции около ТЕЦ-а</p>
+        <h2>⚠️ Граждански Мониторинг на Въздуха - с. Големо село, с. Баланово и с. Шатрово</h2>
+        <p style="text-align:center; color:#666;">Паралелно проследяване на независими измервателни станции около ТЕЦ-а (H82, N321, N330, N329)</p>
         <div id="last-updated-container" class="update-ts"></div>
     </div>
 
@@ -81,71 +91,102 @@
         return 'row-good';
     }
 
-    // КОРИГИРАНА ФУНКЦИЯ: Вече чете Вашите реални записи като "Запад - Югозапад (З-ЮЗ)"
-    function getWindWidget(windStr) {
-        if (!windStr || windStr.trim() === "" || windStr.includes("Няма данни")) {
-            return `<div class="wind-container">💨 Няма данни</div>`;
+    function formatWindBeaufortBg(windSpeed) {
+        if (windSpeed === null || windSpeed === undefined || windSpeed === "") return "";
+        let n = Number(windSpeed);
+        if (Number.isNaN(n) || n < 0) return "";
+        if (n < 2) return "Безветрие";
+        if (n < 6) return "Лек полъх";
+        if (n < 12) return "Лек бриз";
+        if (n < 20) return "Слаб бриз";
+        if (n < 29) return "Умерен бриз";
+        if (n < 39) return "Свеж бриз";
+        if (n < 50) return "Силен бриз";
+        if (n < 62) return "Силен вятър";
+        if (n < 75) return "Бурен вятър";
+        if (n < 89) return "Буря";
+        if (n < 103) return "Силна буря";
+        if (n < 118) return "Жестока буря";
+        return "Ураган";
+    }
+
+    function formatWindSpeed(windSpeed) {
+        if (windSpeed === null || windSpeed === undefined || windSpeed === "") return "";
+        let n = Number(windSpeed);
+        if (Number.isNaN(n)) return "";
+        return `${n.toFixed(1)} km/h`;
+    }
+
+    function degreeFromWindLabel(windStr) {
+        if (!windStr) return null;
+        let u = windStr.toUpperCase();
+        if (u.includes("(С-СИ)")) return 22.5;
+        if (u.includes("(И-СИ)")) return 67.5;
+        if (u.includes("(И-ЮИ)")) return 112.5;
+        if (u.includes("(Ю-ЮИ)")) return 157.5;
+        if (u.includes("(Ю-ЮЗ)")) return 202.5;
+        if (u.includes("(З-ЮЗ)")) return 247.5;
+        if (u.includes("(З-СЗ)")) return 292.5;
+        if (u.includes("(С-СЗ)")) return 337.5;
+        if (u.includes("(СИ)")) return 45;
+        if (u.includes("(ЮИ)")) return 135;
+        if (u.includes("(ЮЗ)")) return 225;
+        if (u.includes("(СЗ)")) return 315;
+        if (u.includes("СЕВЕРЕН") || u.includes("(С)")) return 0;
+        if (u.includes("ИЗТОЧЕН") || u.includes("(И)")) return 90;
+        if (u.includes("ЮЖЕН") || u.includes("(Ю)")) return 180;
+        if (u.includes("ЗАПАДЕН") || u.includes("(З)")) return 270;
+        return null;
+    }
+
+    function windArrowRotation(windDegree, windStr) {
+        let deg = Number(windDegree);
+        if (windDegree === null || windDegree === undefined || windDegree === "" || Number.isNaN(deg)) {
+            deg = degreeFromWindLabel(windStr);
         }
+        if (deg === null || deg === undefined || Number.isNaN(Number(deg))) {
+            return null;
+        }
+        // SVG стрелката сочи изток при 0°. WeatherAPI wind_degree е откъде духа.
+        // +90° я завърта натам, накъдето вятърът носи.
+        return Number(deg) + 90;
+    }
 
-        let rotation = 0;
-        let upperStr = windStr.toUpperCase();
+    function getWindArrowHtml(windStr, windDegree) {
+        let rotation = windArrowRotation(windDegree, windStr);
+        if (rotation === null) {
+            return "";
+        }
+        return `
+            <svg class="wind-arrow" viewBox="0 0 24 24" aria-hidden="true"
+                 style="transform: rotate(${rotation}deg);">
+                <path d="M3 12h14M13 6l8 6-8 6" fill="none" stroke="currentColor"
+                      stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>`;
+    }
 
-        // Проверка по кратките съкращения в скобите от Вашата база данни
-        if (upperStr.includes("(С)")) rotation = -90;
-        else if (upperStr.includes("(СИ)")) rotation = -45;
-        else if (upperStr.includes("(И)")) rotation = 0;
-        else if (upperStr.includes("(ЮИ)")) rotation = 45;
-        else if (upperStr.includes("(Ю)")) rotation = 90;
-        else if (upperStr.includes("(ЮЗ)") || upperStr.includes("(З-ЮЗ)")) rotation = 135;
-        else if (upperStr.includes("(З)")) rotation = 180;
-        else if (upperStr.includes("(СЗ)")) rotation = -135;
-        // Допълнителна проверка за чист текст, ако форматът се промени
-        else if (upperStr.includes("СЕВЕР")) rotation = -90;
-        else if (upperStr.includes("ЮГ")) rotation = 90;
-        else if (upperStr.includes("ИЗТОК")) rotation = 0;
-        else if (upperStr.includes("ЗАПАД")) rotation = 180;
+    function getWindWidget(windStr, windSpeed, windDegree, options) {
+        let withArrow = !options || options.arrow !== false;
+        let speedAsWords = options && options.speedAsWords;
+        let speedLabel = speedAsWords ? formatWindBeaufortBg(windSpeed) : formatWindSpeed(windSpeed);
+        let kmhLabel = formatWindSpeed(windSpeed);
+        let speedHtml = speedLabel
+            ? `<span class="wind-speed" title="${kmhLabel}">${speedLabel}</span>`
+            : "";
+        let arrowHtml = withArrow ? getWindArrowHtml(windStr, windDegree) : "";
+
+        if (!windStr || windStr.trim() === "" || windStr.includes("Няма данни")) {
+            return `<div class="wind-container">${arrowHtml || "💨"} ${speedHtml || "Няма данни"}</div>`;
+        }
 
         return `
             <div class="wind-container">
-                <span class="wind-arrow" style="transform: rotate(${rotation}deg);">➔</span>
+                ${arrowHtml}
                 <span>${windStr}</span>
+                ${speedHtml}
             </div>
         `;
     }
-
-<!--    // Помощна функция за определяне на CSS клас според нивата на прах-->
-<!--    function getRowColorClass(pm25, pm10) {-->
-<!--        if (pm25 > 50 || pm10 > 100) return 'row-critical';-->
-<!--        if (pm25 > 25 || pm10 > 50) return 'row-poor';-->
-<!--        if (pm25 > 15 || pm10 > 30) return 'row-moderate';-->
-<!--        return 'row-good';-->
-<!--    }-->
-
-<!--    // Функция, която генерира HTML за посоката на вятъра и завърта иконата-стрелка (➔)-->
-<!--    function getWindWidget(windStr) {-->
-<!--        if (!windStr || windStr.includes("Няма данни")) {-->
-<!--            return `<div class="wind-container">💨 Няма данни</div>`;-->
-<!--        }-->
-
-<!--        let rotation = 0; // По подразбиране сочи Изток (0 градуса)-->
-<!--        let upperStr = windStr.toUpperCase();-->
-
-<!--        if (upperStr.includes("СЕВЕРЕН") || upperStr.includes(" С (")) rotation = -90;-->
-<!--        else if (upperStr.includes("СЕВЕРОИЗТОЧЕН") || upperStr.includes("СИ (")) rotation = -45;-->
-<!--        else if (upperStr.includes("ИЗТОЧЕН") || upperStr.includes(" И (")) rotation = 0;-->
-<!--        else if (upperStr.includes("ЮГОИЗТОЧЕН") || upperStr.includes("ЮИ (")) rotation = 45;-->
-<!--        else if (upperStr.includes("ЮЖЕН") || upperStr.includes(" Ю (")) rotation = 90;-->
-<!--        else if (upperStr.includes("ЮГОЗАПАДЕН") || upperStr.includes("ЮЗ (")) rotation = 135;-->
-<!--        else if (upperStr.includes("ЗАПАДЕН") || upperStr.includes(" З (")) rotation = 180;-->
-<!--        else if (upperStr.includes("СЕВЕРОЗАПАДЕН") || upperStr.includes("СЗ (")) rotation = -135;-->
-
-<!--        return `-->
-<!--            <div class="wind-container">-->
-<!--                <span class="wind-arrow" style="transform: rotate(${rotation}deg);">➔</span>-->
-<!--                <span>${windStr}</span>-->
-<!--            </div>-->
-<!--        `;-->
-<!--    }-->
 
     function refreshDashboard() {
         fetch('live.json?t=' + new Date().getTime())
@@ -172,7 +213,7 @@
                                 <th>Дата и час</th>
                                 <th>PM2.5 (Норма 25)</th>
                                 <th>PM10 (Норма 50)</th>
-                                <th>Посока на вятъра</th>
+                                <th>Вятър</th>
                             </tr>
                         </thead>
                         <tbody>`;
@@ -183,7 +224,7 @@
                         let stationName = p.station || "Неизвестна станция";
                         let formattedTime = formatBulgarianDateTime(p.timestamp);
                         let rowClass = getRowColorClass(p.pm25, p.pm10);
-                        let windHtml = getWindWidget(p.wind_dir);
+                        let windHtml = getWindWidget(p.wind_dir, p.wind_speed, p.wind_degree, { speedAsWords: true });
 
                         htmlAlerts += `<tr class="${rowClass}">
                             <td><span class="station-lbl">📍 ${stationName}</span></td>
@@ -213,8 +254,8 @@
                                 <th>PM10</th>
                                 <th>Температура</th>
                                 <th>Влажност</th>
-                                <th>Налягане</th>
-                                <th>Посока на вятъра</th>
+                                <th></th>
+                                <th>Вятър</th>
                             </tr>
                         </thead>
                         <tbody>`;
@@ -226,7 +267,8 @@
 
                         let pm25Style = r.pm25 > 25 ? `color: #e74c3c; font-weight: bold;` : `color: #27ae60;`;
                         let pm10Style = r.pm10 > 50 ? `color: #e74c3c; font-weight: bold;` : `color: #27ae60;`;
-                        let windHtml = getWindWidget(r.wind_dir);
+                        let arrowHtml = getWindArrowHtml(r.wind_dir, r.wind_degree);
+                        let windHtml = getWindWidget(r.wind_dir, r.wind_speed, r.wind_degree, { arrow: false });
 
                         htmlRecent += `
                         <tr class="${rowClass}">
@@ -236,7 +278,7 @@
                             <td style="${pm10Style}">${r.pm10} µg/m³</td>
                             <td>🌡️ ${r.temp} °C</td>
                             <td>💧 ${Math.round(r.humidity)} %</td>
-                            <td>🌐 ${r.pressure} hPa</td>
+                            <td class="wind-arrow-cell">${arrowHtml}</td>
                             <td>${windHtml}</td>
                         </tr>`;
                     });
