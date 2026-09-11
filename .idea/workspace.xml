@@ -5,9 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca6ecf55-0532-41d5-bfbb-8ffb82d3a964" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorCommunityEngine.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/air_quality.db" beforeDir="false" afterPath="$PROJECT_DIR$/air_quality.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/live.json" beforeDir="false" afterPath="$PROJECT_DIR$/live.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/PhpNodeEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/PhpNodeEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorDataToWeb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorDataToWeb.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +52,7 @@
     "Application.env-var.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "data-refresh",
     "kotlin-language-version-configured": "true",
     "onboarding.tips.debug.path": "C:/Users/billy/Desktop/dev/sensor-data-to-web/src/main/java/bg/environment/monitoring/Main.java",
     "project.structure.last.edited": "Modules",

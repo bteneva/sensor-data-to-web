@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,11 +36,11 @@ public class PhpNodeEngine {
     }
 
     public void checkAndProcess() {
-        String sofiaTime = ZonedDateTime.now(BG_ZONE).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        String sofiaTime = getSofiaTime();
         boolean anyNew = false;
 
         // 1. Вземаме ТЕКУЩИЯ вятър само веднъж, преди цикъла
-        SensorDataToWeb.WindSnapshot currentWind = SensorDataToWeb.fetchCurrentWind();
+        SensorDataToWeb.WeatherSnapshot currentWind = SensorDataToWeb.fetchCurrentWindAndTemp();
         long nowUnix = Instant.now().getEpochSecond();
 
         for (PhpStation station : STATIONS) {
@@ -83,7 +82,12 @@ public class PhpNodeEngine {
         }
     }
 
-    private boolean saveStationDataBatch(List<String> lines, String stationName, SensorDataToWeb.WindSnapshot currentWind, long nowUnix) {
+    public static String getSofiaTime() {
+        String sofiaTime = ZonedDateTime.now(BG_ZONE).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        return sofiaTime;
+    }
+
+    private boolean saveStationDataBatch(List<String> lines, String stationName, SensorDataToWeb.WeatherSnapshot currentWind, long nowUnix) {
         String sql = "INSERT INTO pollution(timestamp, pm1, pm25, pm10, temp, humidity, pressure, station_name, wind_dir, wind_speed, wind_degree) " +
                 "VALUES(?,?,?,?,?,?,?,?,?,?,?) " +
                 "ON CONFLICT(timestamp, station_name) DO UPDATE SET " +
