@@ -5,14 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca6ecf55-0532-41d5-bfbb-8ffb82d3a964" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Dockerfile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/air_quality.db" beforeDir="false" afterPath="$PROJECT_DIR$/air_quality.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/live.json" beforeDir="false" afterPath="$PROJECT_DIR$/live.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/BobovDolEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/BobovDolEngine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/PhpNodeEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/PhpNodeEngine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorCommunityEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorCommunityEngine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorDataToWeb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorDataToWeb.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,7 +118,15 @@
       <option name="project" value="LOCAL" />
       <updated>1791995694368</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Preparing for Railway - database link changed">
+      <option name="closed" value="true" />
+      <created>1791996348451</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1791996348451</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -140,6 +144,7 @@
     <MESSAGE value="sen55 data web presentation" />
     <MESSAGE value="New type of station added. Weather Api wind data added." />
     <MESSAGE value="Some FE improvements" />
-    <option name="LAST_COMMIT_MESSAGE" value="Some FE improvements" />
+    <MESSAGE value="Preparing for Railway - database link changed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Preparing for Railway - database link changed" />
   </component>
 </project>
