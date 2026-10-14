@@ -25,7 +25,9 @@ import static bg.environment.monitoring.engine.PhpNodeEngine.getSofiaTime;
 
 public class BobovDolEngine {
 
-    private static final String DB_URL = "jdbc:sqlite:air_quality.db";
+    //private static final String DB_URL = "jdbc:sqlite:air_quality.db";
+    private static final String DB_URL = "jdbc:sqlite:/app/data/air_quality.db";
+
 
     private static final String API_URL =
             "http://88.80.111.23:50024/moment_data?update_type=last_minute";

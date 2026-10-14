@@ -19,7 +19,9 @@ import java.util.List;
 import static bg.environment.monitoring.engine.PhpNodeEngine.getSofiaTime;
 
 public class SensorCommunityEngine {
-    private static final String DB_URL = "jdbc:sqlite:air_quality.db";
+    //private static final String DB_URL = "jdbc:sqlite:air_quality.db";
+    private static final String DB_URL = "jdbc:sqlite:/app/data/air_quality.db";
+
     private static final String API_URL = "https://data.sensor.community/airrohr/v1/sensor/";
 
 

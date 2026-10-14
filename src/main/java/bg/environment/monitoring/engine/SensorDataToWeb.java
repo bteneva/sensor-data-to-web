@@ -27,7 +27,9 @@ import static bg.environment.monitoring.engine.PhpNodeEngine.getSofiaTime;
 
 public class SensorDataToWeb {
 
-    private static final String DB_URL = "jdbc:sqlite:air_quality.db";
+    //private static final String DB_URL = "jdbc:sqlite:air_quality.db";
+    private static final String DB_URL = "jdbc:sqlite:/app/data/air_quality.db";
+
     private static final String DATA_URL =
             "https://meter.ac/gs/health/H82/data3.raw";
     private static final String JSON_PATH = "live.json";
