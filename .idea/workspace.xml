@@ -5,12 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca6ecf55-0532-41d5-bfbb-8ffb82d3a964" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorCommunityEngine.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/air_quality.db" beforeDir="false" afterPath="$PROJECT_DIR$/air_quality.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/live.json" beforeDir="false" afterPath="$PROJECT_DIR$/live.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/PhpNodeEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/PhpNodeEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/BobovDolEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/BobovDolEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorCommunityEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorCommunityEngine.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorDataToWeb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorDataToWeb.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -33,12 +33,24 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;bteneva&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/bteneva/sensor-data-to-web.git&quot;,
+    &quot;accountId&quot;: &quot;3b925778-2498-4197-825e-1d62bc38c07f&quot;
+  }
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="3IBhSSntZ6hpGanu79ce7z0Pn7V" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -49,11 +61,13 @@
   "keyToString": {
     "Application.Main.executor": "Run",
     "Application.SensorDataToWeb.executor": "Run",
+    "Application.TestHttp.executor": "Run",
     "Application.env-var.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "data-refresh",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/billy/Desktop/env_monitoring/environment-monitoring",
     "onboarding.tips.debug.path": "C:/Users/billy/Desktop/dev/sensor-data-to-web/src/main/java/bg/environment/monitoring/Main.java",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
@@ -68,6 +82,7 @@
       </envs>
       <option name="MAIN_CLASS_NAME" value="bg.environment.monitoring.engine.SensorDataToWeb" />
       <module name="sensor-data-to-web" />
+      <option name="VM_PARAMETERS" value="-Djava.net.preferIPv4Stack=true" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -90,7 +105,15 @@
       <option name="project" value="LOCAL" />
       <updated>1787669996372</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="New type of station added. Weather Api wind data added.">
+      <option name="closed" value="true" />
+      <created>1789121836029</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1789121836029</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

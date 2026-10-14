@@ -10,11 +10,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -134,6 +130,21 @@ public class SensorDataToWeb {
                 5,
                 TimeUnit.MINUTES
         );
+
+        BobovDolEngine bobovDolEngine =
+                new BobovDolEngine(() -> {
+                    try {
+                        exportDataToJson();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+        scheduler.scheduleAtFixedRate(
+                bobovDolEngine::checkAndProcess,
+                0,
+                1,
+                TimeUnit.MINUTES
+        );
     }
 
     // =============================================================
@@ -163,6 +174,7 @@ public class SensorDataToWeb {
 
             migrateToCompositeKey(stmt);
             ensureWindColumns(stmt);
+            ensureAirPollutionColumns();
 
             System.out.println(
                     getSofiaTime() +
@@ -248,6 +260,27 @@ public class SensorDataToWeb {
             }
         }
     }
+    private static void ensureAirPollutionColumns() {
+        String[] columns = {"so2", "no2"};
+
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            for (String column : columns) {
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.execute("ALTER TABLE pollution ADD COLUMN " + column + " REAL");
+                    System.out.println("✅ Добавена колона: " + column);
+                } catch (SQLException e) {
+                    if (e.getMessage() != null &&
+                            e.getMessage().toLowerCase().contains("duplicate column name")) {
+                        // Колоната вече съществува — всичко е наред.
+                    } else {
+                        throw e;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Грешка при добавяне на SO2/NO2 колоните: " + e.getMessage());
+        }
+    }
 
     // =============================================================
     // H82 DATA
@@ -320,8 +353,8 @@ public class SensorDataToWeb {
                 "INSERT OR IGNORE INTO pollution(" +
                         "timestamp, pm1, pm25, pm10, temp, humidity, " +
                         "pressure, station_name, wind_dir, " +
-                        "wind_speed, wind_degree" +
-                        ") VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                        "wind_speed, wind_degree, " + "so2, no2" +
+                        ") VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         int inserted = 0;
 
@@ -375,6 +408,9 @@ public class SensorDataToWeb {
                         double temp =
                                 Double.parseDouble(rawTemp);
 
+                        double so2 = Double.parseDouble(words[23].trim());
+                        double no2 = Double.parseDouble(words[29].trim());
+
                         pstmt.setString(1, formattedTime);
                         pstmt.setDouble(2, pm1);
                         pstmt.setDouble(3, pm25);
@@ -382,6 +418,7 @@ public class SensorDataToWeb {
                         pstmt.setDouble(5, temp);
                         pstmt.setDouble(6, humidity);
                         pstmt.setDouble(7, pressure);
+
 
                         pstmt.setString(
                                 8,
@@ -393,6 +430,8 @@ public class SensorDataToWeb {
                                 9,
                                 currentWeather
                         );
+                        pstmt.setDouble(12, so2);
+                        pstmt.setDouble(13, no2);
 
                         pstmt.addBatch();
                         inserted++;
@@ -680,7 +719,7 @@ public class SensorDataToWeb {
         }
     }
 
-    private static String translateWindDirection(String dir) {
+    public static String translateWindDirection(String dir) {
 
         return switch (dir) {
 
@@ -755,105 +794,120 @@ public class SensorDataToWeb {
     // EXPORT TO JSON
     // =============================================================
 
+
     public static void exportDataToJson() {
 
-        List<Map<String, Object>> alerts =
-                new ArrayList<>();
+        List<Map<String, Object>> alerts = new ArrayList<>();
+        List<Map<String, Object>> recent = new ArrayList<>();
 
-        List<Map<String, Object>> recent =
-                new ArrayList<>();
+        final String BOBOV_DOL = "ТЕЦ Бобов дол - Големо село";
 
         /*
-         * АЛАРМИ:
-         *
-         * Последните 48 реални часа.
-         *
-         * Аларма има при:
-         * PM2.5 > 25
-         * ИЛИ
-         * PM10 > 50
-         *
-         * Няма допълнителен "анализ" на посоката.
+         * ALERTS:
+         * - Другите станции: съществуващите минутни/периодични записи.
+         * - Бобов дол: средна за завършен 5-минутен интервал.
+         * - Прагът се прилага върху средната стойност.
          */
-
         String queryAlerts =
-                "SELECT timestamp, pm25, pm10, station_name, " +
-                        "wind_dir, wind_speed, wind_degree " +
+                "WITH bobovdol_avg AS ( " +
+                        " SELECT " +
+                        "   strftime('%Y-%m-%d %H:', timestamp) || " +
+                        "   printf('%02d', " +
+                        "       (CAST(strftime('%M', timestamp) AS INTEGER) / 5) * 5" +
+                        "   ) || ':00' AS timestamp, " +
+                        "   station_name, " +
+                        "   AVG(pm25) AS pm25, " +
+                        "   AVG(pm10) AS pm10, " +
+                        "   AVG(wind_speed) AS wind_speed, " +
+                        "   AVG(wind_degree) AS wind_degree, " +
+                        "   COUNT(*) AS samples " +
+                        " FROM pollution " +
+                        " WHERE station_name = '" + BOBOV_DOL + "' " +
+                        "   AND timestamp >= datetime('now', '-48 hours', 'localtime') " +
+                        " GROUP BY " +
+                        "   strftime('%Y-%m-%d %H:', timestamp), " +
+                        "   (CAST(strftime('%M', timestamp) AS INTEGER) / 5) " +
+                        " HAVING COUNT(*) = 5 " +
+                        ") " +
+
+                        "SELECT timestamp, pm25, pm10, station_name, " +
+                        "       wind_dir, wind_speed, wind_degree " +
                         "FROM pollution " +
-                        "WHERE timestamp >= " +
-                        "datetime('now', '-48 hours', 'localtime') " +
-                        "AND (pm10 > 50.0 OR pm25 > 25.0) " +
+                        "WHERE station_name <> '" + BOBOV_DOL + "' " +
+                        "  AND timestamp >= datetime('now', '-48 hours', 'localtime') " +
+                        "  AND (pm10 > 50.0 OR pm25 > 25.0) " +
+
+                        "UNION ALL " +
+
+                        "SELECT timestamp, pm25, pm10, station_name, " +
+                        "       NULL AS wind_dir, wind_speed, wind_degree " +
+                        "FROM bobovdol_avg " +
+                        "WHERE pm10 > 50.0 OR pm25 > 25.0 " +
+
                         "ORDER BY timestamp DESC";
 
         /*
-         * Последните 15 измервания за таблицата на сайта.
+         * RECENT:
+         * Другите станции се показват както досега.
+         * Бобов дол се показва със средни стойности за 5 минути.
          */
-
         String queryRecent =
-                "SELECT timestamp, pm25, pm10, temp, humidity, " +
-                        "pressure, station_name, wind_dir, " +
-                        "wind_speed, wind_degree " +
+                "WITH bobovdol_avg AS ( " +
+                        " SELECT " +
+                        "   strftime('%Y-%m-%d %H:', timestamp) || " +
+                        "   printf('%02d', " +
+                        "       (CAST(strftime('%M', timestamp) AS INTEGER) / 5) * 5" +
+                        "   ) || ':00' AS timestamp, " +
+                        "   station_name, " +
+                        "   AVG(pm25) AS pm25, " +
+                        "   AVG(pm10) AS pm10, " +
+                        "   AVG(temp) AS temp, " +
+                        "   AVG(humidity) AS humidity, " +
+                        "   AVG(pressure) AS pressure, " +
+                        "   AVG(wind_speed) AS wind_speed, " +
+                        "   AVG(wind_degree) AS wind_degree, " +
+                        "   COUNT(*) AS samples " +
+                        " FROM pollution " +
+                        " WHERE station_name = '" + BOBOV_DOL + "' " +
+                        " GROUP BY " +
+                        "   strftime('%Y-%m-%d %H:', timestamp), " +
+                        "   (CAST(strftime('%M', timestamp) AS INTEGER) / 5) " +
+                        " HAVING COUNT(*) = 5 " +
+                        ") " +
+
+                        "SELECT timestamp, pm25, pm10, temp, humidity, pressure, " +
+                        "       station_name, wind_dir, wind_speed, wind_degree " +
                         "FROM pollution " +
+                        "WHERE station_name <> '" + BOBOV_DOL + "' " +
+
+                        "UNION ALL " +
+
+                        "SELECT timestamp, pm25, pm10, temp, humidity, pressure, " +
+                        "       station_name, NULL AS wind_dir, wind_speed, wind_degree " +
+                        "FROM bobovdol_avg " +
+
                         "ORDER BY timestamp DESC " +
                         "LIMIT 15";
 
-        try (Connection conn =
-                     DriverManager.getConnection(DB_URL);
-             Statement stmt =
-                     conn.createStatement()) {
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             Statement stmt = conn.createStatement()) {
 
             // =====================================================
             // ALERTS
             // =====================================================
-
-            try (ResultSet rs =
-                         stmt.executeQuery(queryAlerts)) {
+            try (ResultSet rs = stmt.executeQuery(queryAlerts)) {
 
                 while (rs.next()) {
 
-                    Map<String, Object> row =
-                            new HashMap<>();
+                    Map<String, Object> row = new HashMap<>();
 
-                    row.put(
-                            "timestamp",
-                            rs.getString("timestamp")
-                    );
-
-                    row.put(
-                            "pm25",
-                            nullableDouble(rs, "pm25")
-                    );
-
-                    row.put(
-                            "pm10",
-                            nullableDouble(rs, "pm10")
-                    );
-
-                    row.put(
-                            "station",
-                            rs.getString("station_name")
-                    );
-
-                    row.put(
-                            "wind_dir",
-                            rs.getString("wind_dir")
-                    );
-
-                    row.put(
-                            "wind_speed",
-                            nullableDouble(
-                                    rs,
-                                    "wind_speed"
-                            )
-                    );
-
-                    row.put(
-                            "wind_degree",
-                            nullableDouble(
-                                    rs,
-                                    "wind_degree"
-                            )
-                    );
+                    row.put("timestamp", rs.getString("timestamp"));
+                    row.put("pm25", nullableDouble(rs, "pm25"));
+                    row.put("pm10", nullableDouble(rs, "pm10"));
+                    row.put("station", rs.getString("station_name"));
+                    row.put("wind_dir", rs.getString("wind_dir"));
+                    row.put("wind_speed", nullableDouble(rs, "wind_speed"));
+                    row.put("wind_degree", nullableDouble(rs, "wind_degree"));
 
                     alerts.add(row);
                 }
@@ -862,70 +916,22 @@ public class SensorDataToWeb {
             // =====================================================
             // RECENT
             // =====================================================
-
-            try (ResultSet rs =
-                         stmt.executeQuery(queryRecent)) {
+            try (ResultSet rs = stmt.executeQuery(queryRecent)) {
 
                 while (rs.next()) {
 
-                    Map<String, Object> row =
-                            new HashMap<>();
+                    Map<String, Object> row = new HashMap<>();
 
-                    row.put(
-                            "timestamp",
-                            rs.getString("timestamp")
-                    );
-
-                    row.put(
-                            "pm25",
-                            nullableDouble(rs, "pm25")
-                    );
-
-                    row.put(
-                            "pm10",
-                            nullableDouble(rs, "pm10")
-                    );
-
-                    row.put(
-                            "temp",
-                            nullableDouble(rs, "temp")
-                    );
-
-                    row.put(
-                            "humidity",
-                            nullableDouble(rs, "humidity")
-                    );
-
-                    row.put(
-                            "pressure",
-                            nullableDouble(rs, "pressure")
-                    );
-
-                    row.put(
-                            "station",
-                            rs.getString("station_name")
-                    );
-
-                    row.put(
-                            "wind_dir",
-                            rs.getString("wind_dir")
-                    );
-
-                    row.put(
-                            "wind_speed",
-                            nullableDouble(
-                                    rs,
-                                    "wind_speed"
-                            )
-                    );
-
-                    row.put(
-                            "wind_degree",
-                            nullableDouble(
-                                    rs,
-                                    "wind_degree"
-                            )
-                    );
+                    row.put("timestamp", rs.getString("timestamp"));
+                    row.put("pm25", nullableDouble(rs, "pm25"));
+                    row.put("pm10", nullableDouble(rs, "pm10"));
+                    row.put("temp", nullableDouble(rs, "temp"));
+                    row.put("humidity", nullableDouble(rs, "humidity"));
+                    row.put("pressure", nullableDouble(rs, "pressure"));
+                    row.put("station", rs.getString("station_name"));
+                    row.put("wind_dir", rs.getString("wind_dir"));
+                    row.put("wind_speed", nullableDouble(rs, "wind_speed"));
+                    row.put("wind_degree", nullableDouble(rs, "wind_degree"));
 
                     recent.add(row);
                 }
@@ -934,57 +940,42 @@ public class SensorDataToWeb {
             // =====================================================
             // ROOT JSON
             // =====================================================
-
-            Map<String, Object> response =
-                    new HashMap<>();
+            Map<String, Object> response = new HashMap<>();
 
             response.put(
                     "last_updated",
-                    LocalDateTime
-                            .now(BG_ZONE)
+                    LocalDateTime.now(BG_ZONE)
                             .toString()
                             .replace("T", " ")
             );
 
-            response.put(
-                    "alerts",
-                    alerts
-            );
+            response.put("alerts", alerts);
+            response.put("recent", recent);
 
-            response.put(
-                    "recent",
-                    recent
-            );
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .create();
 
-            Gson gson =
-                    new GsonBuilder()
-                            .setPrettyPrinting()
-                            .create();
-
-            try (FileWriter writer =
-                         new FileWriter(JSON_PATH)) {
-
-                gson.toJson(
-                        response,
-                        writer
-                );
+            try (FileWriter writer = new FileWriter(JSON_PATH)) {
+                gson.toJson(response, writer);
             }
 
             System.out.println(
-                    getSofiaTime() +
-                            " 🌐 JSON обновен: " +
-                            alerts.size() +
-                            " аларми, " +
-                            recent.size() +
-                            " последни измервания."
+                    getSofiaTime()
+                            + " 🌐 JSON обновен: "
+                            + alerts.size()
+                            + " аларми, "
+                            + recent.size()
+                            + " последни измервания."
             );
+
 
         } catch (Exception e) {
 
             System.err.println(
-                    getSofiaTime() +
-                            " ❌ Грешка при експорт на JSON: " +
-                            e.getMessage()
+                    getSofiaTime()
+                            + " ❌ Грешка при експорт на JSON: "
+                            + e.getMessage()
             );
 
             e.printStackTrace();

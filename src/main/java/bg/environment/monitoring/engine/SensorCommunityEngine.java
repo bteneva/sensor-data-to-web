@@ -23,7 +23,11 @@ public class SensorCommunityEngine {
     private static final String API_URL = "https://data.sensor.community/airrohr/v1/sensor/";
 
 
-    private final HttpClient client = HttpClient.newHttpClient();
+    //private final HttpClient client = HttpClient.newHttpClient();
+    private final HttpClient client = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .version(HttpClient.Version.HTTP_1_1)
+            .build();
     private final Runnable onNewDataCallback;
 
 
@@ -42,7 +46,11 @@ public class SensorCommunityEngine {
     public void checkAndProcess() {
         boolean anyNew = false;
         long nowUnix = Instant.now().getEpochSecond();
-        SensorDataToWeb.WeatherSnapshot currentWind = SensorDataToWeb.fetchCurrentWindAndTemp();
+
+        System.out.println(getSofiaTime() + " >>> ПРЕДИ fetchCurrentWindAndTemp()");
+        SensorDataToWeb.WeatherSnapshot currentWind =
+                SensorDataToWeb.fetchCurrentWindAndTemp();
+        System.out.println(getSofiaTime() + " <<< СЛЕД fetchCurrentWindAndTemp()");
 
         for (ScSensor sensor : SENSORS) {
             try {
@@ -50,9 +58,15 @@ public class SensorCommunityEngine {
                 System.out.println(API_URL+sensor.id()+"/");
 
 
+//                HttpRequest request = HttpRequest.newBuilder()
+//                        .uri(URI.create(String.format(API_URL+sensor.id()+"/")))
+//                        .timeout(Duration.ofSeconds(10))
+//                        .GET()
+//                        .build();
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(String.format(API_URL+sensor.id()+"/")))
-                        .timeout(Duration.ofSeconds(10))
+                        .uri(URI.create(API_URL + sensor.id() + "/"))
+                        .timeout(Duration.ofSeconds(20))
+                        .header("User-Agent", "Mozilla/5.0")
                         .GET()
                         .build();
                 // Добавяме User-Agent header, за да изглеждаме като истински браузър и да прескочим блокажа
@@ -64,9 +78,16 @@ public class SensorCommunityEngine {
 //                        .build();
                 System.out.println(request);
 
+                System.out.println(getSofiaTime()
+                        + " >>> ПРЕДИ HTTP Sensor.Community " + sensor.id());
+
 
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+                System.out.println(getSofiaTime()
+                        + " <<< СЛЕД HTTP Sensor.Community " + sensor.id()
+                        + " status=" + response.statusCode());
+                
                 if (response.statusCode() == 200 && response.body() != null && !response.body().trim().equals("[]")) {
                     if (parseAndSaveJson(response.body(), sensor.mappedStationName(), currentWind, nowUnix)) {
                         anyNew = true;

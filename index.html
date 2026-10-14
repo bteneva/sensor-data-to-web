@@ -66,8 +66,18 @@
 </div>
 
 <script>
-    // Коригирана и фиксирана функция за форматиране на датата
-        // Оригиналната и напълно работеща функция за дата
+    // 🌟 ПОМОЩНА ФУНКЦИЯ ЗА ВРЕМЕННО ПРЕИМЕНУВАНЕ НА СТАНЦИИ
+    function getDisplayStationName(rawName) {
+        if (!rawName) return "Неизвестна станция";
+
+        // РЕДАКТИРАЙ ТУК: Ако името съвпада, го подменяме за уеб интерфейса
+        if (rawName === "ТЕЦ Бобов дол - Големо село") {
+            return "Големо село - ТЕЦ";
+        }
+
+        return rawName; // Връща оригиналното име за всички останали станции
+    }
+
     function formatBulgarianDateTime(rawTimestamp) {
         if (!rawTimestamp) return "";
         let parts = rawTimestamp.split(' ');
@@ -187,108 +197,171 @@
             </div>
         `;
     }
-
-    function refreshDashboard() {
-        fetch('live.json?t=' + new Date().getTime())
-            .then(res => res.json())
-            .then(data => {
-
-                // 0. ОБНОВЯВАНЕ НА ЧАСА НА СИНХРОНИЗАЦИЯ
-                const updatedContainer = document.getElementById('last-updated-container');
-                if (data.last_updated) {
-                    updatedContainer.innerHTML = `Последно синхронизиране с базата: ${formatBulgarianDateTime(data.last_updated)}`;
-                }
-
-                // 1. РЕНДЕРИРАНЕ НА ТАБЛИЦА ПРЕВИШЕНИЯ
-                const alertsContainer = document.getElementById('alerts-container');
-                alertsContainer.innerHTML = '';
-
-                if (!data.alerts || data.alerts.length === 0) {
-                    alertsContainer.innerHTML = '<div class="no-alerts">🌱 През последните 48 часа няма замервания над екологичните норми на нито една станция.</div>';
-                } else {
-                    let htmlAlerts = `<table>
-                        <thead>
-                            <tr>
-                                <th>Станция</th>
-                                <th>Дата и час</th>
-                                <th>PM2.5 (Норма 25)</th>
-                                <th>PM10 (Норма 50)</th>
-                                <th>Вятър</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
-
-                    data.alerts.forEach(p => {
-                        let pm25Display = p.pm25 > 25 ? `<span class="badge">${p.pm25} µg/m³</span>` : p.pm25 + " µg/m³";
-                        let pm10Display = p.pm10 > 50 ? `<span class="badge">${p.pm10} µg/m³</span>` : p.pm10 + " µg/m³";
-                        let stationName = p.station || "Неизвестна станция";
-                        let formattedTime = formatBulgarianDateTime(p.timestamp);
-                        let rowClass = getRowColorClass(p.pm25, p.pm10);
-                        let windHtml = getWindWidget(p.wind_dir, p.wind_speed, p.wind_degree, { speedAsWords: true });
-
-                        htmlAlerts += `<tr class="${rowClass}">
-                            <td><span class="station-lbl">📍 ${stationName}</span></td>
-                            <td><strong>${formattedTime}</strong></td>
-                            <td>${pm25Display}</td>
-                            <td>${pm10Display}</td>
-                            <td>${windHtml}</td>
-                        </tr>`;
-                    });
-                    htmlAlerts += '</tbody></table>';
-                    alertsContainer.innerHTML = htmlAlerts;
-                }
-
-                               // 2. РЕНДЕРИРАНЕ НА ПОСЛЕДНИТЕ 15 ЗАМЕРВАНИЯ
-                const recentContainer = document.getElementById('recent-container');
-                recentContainer.innerHTML = '';
-
-                if (!data.recent || data.recent.length === 0) {
-                    recentContainer.innerHTML = '<div class="no-alerts">Няма заредени замервания в базата.</div>';
-                } else {
-                    let htmlRecent = `<table>
-                        <thead>
-                            <tr>
-                                <th>Станция</th>
-                                <th>Дата и час</th>
-                                <th>PM2.5</th>
-                                <th>PM10</th>
-                                <th>Температура</th>
-                                <th>Влажност</th>
-                                <th></th>
-                                <th>Вятър</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
-
-                    data.recent.forEach(r => {
-                        let stationName = r.station || "Неизвестна станция";
-                        let formattedTime = formatBulgarianDateTime(r.timestamp);
-                        let rowClass = getRowColorClass(r.pm25, r.pm10);
-
-                        let pm25Style = r.pm25 > 25 ? `color: #e74c3c; font-weight: bold;` : `color: #27ae60;`;
-                        let pm10Style = r.pm10 > 50 ? `color: #e74c3c; font-weight: bold;` : `color: #27ae60;`;
-                        let arrowHtml = getWindArrowHtml(r.wind_dir, r.wind_degree);
-                        let windHtml = getWindWidget(r.wind_dir, r.wind_speed, r.wind_degree, { arrow: false });
-
-                        htmlRecent += `
-                        <tr class="${rowClass}">
-                            <td><span class="station-lbl">📍 ${stationName}</span></td>
-                            <td>📅 ${formattedTime}</td>
-                            <td style="${pm25Style}">${r.pm25} µg/m³</td>
-                            <td style="${pm10Style}">${r.pm10} µg/m³</td>
-                            <td>🌡️ ${r.temp} °C</td>
-                            <td>💧 ${Math.round(r.humidity)} %</td>
-                            <td class="wind-arrow-cell">${arrowHtml}</td>
-                            <td>${windHtml}</td>
-                        </tr>`;
-                    });
-
-                    htmlRecent += '</tbody></table>';
-                    recentContainer.innerHTML = htmlRecent;
-                }
-
-            }).catch(e => console.error("Грешка при визуализация:", e));
+    /**
+ * Преобразува градуси в българска текстова посока на вятъра.
+ * Ако вече има текстова посока от базата, връща нея.
+ */
+function parseWindDirection(degree, currentDir) {
+    // 1. Ако бекендът вече е пратил готов текст (напр. за H82), ползваме го директно
+    if (currentDir && currentDir !== "Няма данни") {
+        return currentDir;
     }
+
+    // 2. Ако липсват градуси, връщаме празен низ или текст по избор
+    if (degree === null || degree === undefined) {
+        return "—";
+    }
+
+    // 3. Нормализиране на градусите между 0 и 360
+    let normalizedDegree = (degree % 360 + 360) % 360;
+
+    // 4. Списък с 16-те посоки на български
+    const directions = [
+        "Север (С)", "Север-Североизток (С-СИ)", "Североизток (СИ)", "Изток-Североизток (И-СИ)",
+        "Изток (И)", "Изток-Югоизток (И-ЮИ)", "Югоизток (ЮИ)", "Юг-Югоизток (Ю-ЮИ)",
+        "Юг (Ю)", "Юг-Югозапад (Ю-ЮЗ)", "Югозапад (ЮЗ)", "Запад-Югозапад (З-ЮЗ)",
+        "Запад (З)", "Запад-Северозапад (З-СЗ)", "Северозапад (СЗ)", "Север-Северозапад (С-СЗ)"
+    ];
+
+    // Изчисляване на индекса (сектори по 22.5 градуса с 11.25 градуса отместване за закръгляне)
+    const index = Math.floor((normalizedDegree + 11.25) / 22.5);
+
+    return directions[index % 16];
+}
+
+
+<!--
+
+
+function refreshDashboard() {
+    fetch('live.json?t=' + new Date().getTime())
+        .then(res => res.json())
+        .then(data => {
+
+            // 0. ОБНОВЯВАНЕ НА ЧАСА НА СИНХРОНИЗАЦИЯ
+            const updatedContainer = document.getElementById('last-updated-container');
+            if (data.last_updated) {
+                updatedContainer.innerHTML = `Последно синхронизиране с базата: ${formatBulgarianDateTime(data.last_updated)}`;
+            }
+
+            // 1. РЕНДЕРИРАНЕ НА ТАБЛИЦА ПРЕВИШЕНИЯ
+            const alertsContainer = document.getElementById('alerts-container');
+            alertsContainer.innerHTML = '';
+
+           // Филтрираме превишенията за Шатрово
+            const filteredAlerts = (data.alerts || []).filter(p => {
+                const stationName = p.station || "Неизвестна станция";
+                // Връща true само ако името НЕ съдържа "Шатрово"
+                return !stationName.includes("Шатрово");
+            });
+
+            if (filteredAlerts.length === 0) {
+                alertsContainer.innerHTML = '<div class="no-alerts">🌱 През последните 48 часа няма замервания над екологичните норми на нито една станция.</div>';
+            } else {
+                let htmlAlerts = `<table>
+                    <thead>
+                        <tr>
+                            <th>Станция</th>
+                            <th>Дата и час</th>
+                            <th>PM2.5 (Норма 25)</th>
+                            <th>PM10 (Норма 50)</th>
+                            <th>Вятър</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                filteredAlerts.forEach(p => {
+                    let pm25Display = p.pm25 > 25 ? `<span class="badge">${p.pm25} µg/m³</span>` : p.pm25 + " µg/m³";
+                    let pm10Display = p.pm10 > 50 ? `<span class="badge">${p.pm10} µg/m³</span>` : p.pm10 + " µg/m³";
+                    let stationName = p.station || "Неизвестна станция";
+
+                      // 🌟 ВРЕМЕНЕН IF ФИЛТЪР ЗА ПРЕИМЕНУВАНЕ:
+                    if (stationName === "ТЕЦ Бобов дол - Големо село") { stationName = "Големо село - ТЕЦ"; }
+
+                    let formattedTime = formatBulgarianDateTime(p.timestamp);
+                    let rowClass = getRowColorClass(p.pm25, p.pm10);
+                    let windHtml = getWindWidget(p.wind_dir, p.wind_speed, p.wind_degree, { speedAsWords: true });
+
+                    htmlAlerts += `<tr class="${rowClass}">
+                        <td><span class="station-lbl">📍 ${stationName}</span></td>
+                        <td><strong>${formattedTime}</strong></td>
+                        <td>${pm25Display}</td>
+                        <td>${pm10Display}</td>
+                        <td>${windHtml}</td>
+                    </tr>`;
+                });
+                htmlAlerts += '</tbody></table>';
+                alertsContainer.innerHTML = htmlAlerts;
+            }
+
+            // 2. РЕНДЕРИРАНЕ НА ПОСЛЕДНИТЕ 15 ЗАМЕРВАНИЯ
+            const recentContainer = document.getElementById('recent-container');
+            recentContainer.innerHTML = '';
+
+         // Пазим хронологичния поток ОРИГИНАЛЕН (без филтриране)
+            const filteredRecent = data.recent || [];
+
+            // Филтрираме САМО превишенията за Шатрово
+<!--            const filteredAlerts = (data.alerts || []).filter(p => {-->
+<!--                const stationName = p.station || "Неизвестна станция";-->
+<!--                return !stationName.includes("Шатрово") && !stationName.includes("(H82)");-->
+<!--            });-->
+
+
+
+            if (filteredRecent.length === 0) {
+                recentContainer.innerHTML = '<div class="no-alerts">Няма заредени замервания в базата.</div>';
+            } else {
+                let htmlRecent = `<table>
+                    <thead>
+                        <tr>
+                            <th>Станция</th>
+                            <th>Дата и час</th>
+                            <th>PM2.5</th>
+                            <th>PM10</th>
+                            <th>Температура</th>
+                            <th>Влажност</th>
+                            <th></th>
+                            <th>Вятър</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                filteredRecent.forEach(r => {
+                    let stationName = r.station || "Неизвестна станция";
+                    let formattedTime = formatBulgarianDateTime(r.timestamp);
+                    let rowClass = getRowColorClass(r.pm25, r.pm10);
+
+                    let pm25Style = r.pm25 > 25 ? `color: #e74c3c; font-weight: bold;` : `color: #27ae60;`;
+                    let pm10Style = r.pm10 > 50 ? `color: #e74c3c; font-weight: bold;` : `color: #27ae60;`;
+                    let arrowHtml = getWindArrowHtml(r.wind_dir, r.wind_degree);
+                    let windHtml = getWindWidget(r.wind_dir, r.wind_speed, r.wind_degree, { arrow: false });
+                    const windDirectionText = parseWindDirection(r.wind_degree, r.wind_dir);
+                    const windSpeedText = r.wind_speed !== null ? `${r.wind_speed.toFixed(1)} km/h` : "няма данни";
+
+                    htmlRecent += `
+                    <tr class="${rowClass}">
+                        <td><span class="station-lbl">📍 ${stationName}</span></td>
+                        <td>📅 ${formattedTime}</td>
+                        <td style="${pm25Style}">${Math.round(r.pm25)} µg/m³</td>
+                        <td style="${pm10Style}">${Math.round(r.pm10)} µg/m³</td>
+                        <td>🌡️ ${Math.round(r.temp)} °C</td>
+                        <td>💧 ${Math.round(r.humidity)} %</td>
+                        <td class="wind-arrow-cell">${arrowHtml}</td>
+                        <td>
+                            <!-- Изписване на изчислената посока на екрана -->
+                                <span>💨 ${windDirectionText}</span>
+                                <small style="color: #666;">(${windSpeedText})</small>
+                        </td>
+                    </tr>`;
+                });
+
+                htmlRecent += '</tbody></table>';
+                recentContainer.innerHTML = htmlRecent;
+            }
+
+        }).catch(e => console.error("Грешка при визуализация:", e));
+}
 
     // Стартиране на таблото
     refreshDashboard();
