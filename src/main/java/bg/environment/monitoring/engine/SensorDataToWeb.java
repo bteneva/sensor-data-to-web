@@ -23,6 +23,16 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpExchange;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+
 import static bg.environment.monitoring.engine.PhpNodeEngine.getSofiaTime;
 
 public class SensorDataToWeb {
@@ -36,6 +46,28 @@ public class SensorDataToWeb {
     private static final ZoneId BG_ZONE = ZoneId.of("Europe/Sofia");
 
     public static void main(String[] args) {
+
+        // =========================================================
+        // СТАРТИРАНЕ НА ВГРАДЕНИЯ УЕБ СЪРВЪР
+        // =========================================================
+        try {
+            // Railway подава системна променлива PORT. Ако липсва, ползваме 8080
+            String portEnv = System.getenv("PORT");
+            int port = (portEnv != null) ? Integer.parseInt(portEnv) : 8080;
+
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+
+            // Създаваме ендпоинт /live.json
+            server.createContext("/live.json", new LiveJsonHandler());
+
+            server.setExecutor(null); // ползва стандартния изпълнител
+            server.start();
+
+            System.out.println(getSofiaTime() + " 🌐 Уеб сървърът стартира успешно на порт: " + port);
+        } catch (Exception e) {
+            System.err.println("❌ Неуспешно стартиране на уеб сървъра: " + e.getMessage());
+        }
+
 
         initDatabase();
 
@@ -1024,4 +1056,38 @@ public class SensorDataToWeb {
             Double humidity
     ) {
     }
+    // =============================================================
+    // HTTP HANDLER ЗА LIVE.JSON
+    // =============================================================
+    static class LiveJsonHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            // Добавяме CORS хедъри, за да може фронтендът да чете файла от друг домейн
+            exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+            exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
+
+            if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+                try {
+                    // Прочитаме съдържанието на live.json
+                    byte[] response = Files.readAllBytes(Paths.get(JSON_PATH));
+                    exchange.sendResponseHeaders(200, response.length);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(response);
+                    }
+                } catch (IOException e) {
+                    // Ако файлът все още не е генериран при първото пускане
+                    String errorMsg = "{\"error\": \"Данните все още се генерират. Моля изчакайте малко.\"}";
+                    byte[] response = errorMsg.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                    exchange.sendResponseHeaders(404, response.length);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(response);
+                    }
+                }
+            } else {
+                // Разрешаваме само GET заявки
+                exchange.sendResponseHeaders(405, -1);
+            }
+        }
+    }
+
 }
