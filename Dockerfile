@@ -8,7 +8,10 @@ RUN mvn clean package -DskipTests
 # 2. Етап на изпълнение
 FROM eclipse-temurin:17-jre
 WORKDIR /app
-# Копираме компилирания .jar файл от първия етап
 COPY --from=build /app/target/*.jar app.jar
-# Стартираме приложението
+
+# Казваме на Railway, че ще ползваме стандартния порт 8080 (или този от системата)
+ENV PORT=8080
+EXPOSE 8080
+
 CMD ["java", "-jar", "app.jar"]
