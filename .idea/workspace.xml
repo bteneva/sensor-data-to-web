@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca6ecf55-0532-41d5-bfbb-8ffb82d3a964" name="Changes" comment="">
+    <list default="true" id="ca6ecf55-0532-41d5-bfbb-8ffb82d3a964" name="Changes" comment="Dockerfile change,">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/air_quality.db" beforeDir="false" afterPath="$PROJECT_DIR$/air_quality.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/live.json" beforeDir="false" afterPath="$PROJECT_DIR$/live.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorDataToWeb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorDataToWeb.java" afterDir="false" />
@@ -158,7 +159,23 @@
       <option name="project" value="LOCAL" />
       <updated>1792000058084</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Feat: Add built-in HTTP server for live.json">
+      <option name="closed" value="true" />
+      <created>1792000405395</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1792000405395</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Dockerfile change">
+      <option name="closed" value="true" />
+      <created>1792000835810</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1792000835810</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -177,6 +194,8 @@
     <MESSAGE value="New type of station added. Weather Api wind data added." />
     <MESSAGE value="Some FE improvements" />
     <MESSAGE value="Preparing for Railway - database link changed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Preparing for Railway - database link changed" />
+    <MESSAGE value="Feat: Add built-in HTTP server for live.json" />
+    <MESSAGE value="Dockerfile change" />
+    <option name="LAST_COMMIT_MESSAGE" value="Dockerfile change" />
   </component>
 </project>

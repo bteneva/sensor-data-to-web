@@ -59,6 +59,7 @@ public class SensorDataToWeb {
 
             // Създаваме ендпоинт /live.json
             server.createContext("/live.json", new LiveJsonHandler());
+            server.createContext("/", new StaticFileHandler());
 
             server.setExecutor(null); // ползва стандартния изпълнител
             server.start();
@@ -1089,5 +1090,46 @@ public class SensorDataToWeb {
             }
         }
     }
+    // =============================================================
+    // HTTP HANDLER ЗА СТАТИЧНИ ФАЙЛОВЕ (index.html, script.js и др.)
+    // =============================================================
+    static class StaticFileHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            String path = exchange.getRequestURI().getPath();
+
+            // Ако потребителят отвори само главния адрес (https://.../), му даваме index.html
+            if (path.equals("/")) {
+                path = "/index.html";
+            }
+
+            // Пътят до файла в контейнера (приемаме, че са в папка 'web' или в главната)
+            // За този пример ще четем от главната папка на приложението:
+            java.io.File file = new java.io.File("." + path);
+
+            if (file.exists() && !file.isDirectory()) {
+                // Определяне на Content-Type според разширението на файла
+                String contentType = "text/plain";
+                if (path.endsWith(".html")) contentType = "text/html; charset=UTF-8";
+                else if (path.endsWith(".js")) contentType = "application/javascript; charset=UTF-8";
+                else if (path.endsWith(".css")) contentType = "text/css; charset=UTF-8";
+
+                exchange.getResponseHeaders().set("Content-Type", contentType);
+                byte[] response = Files.readAllBytes(file.toPath());
+                exchange.sendResponseHeaders(200, response.length);
+                try (OutputStream os = exchange.getResponseBody()) {
+                    os.write(response);
+                }
+            } else {
+                // Ако файлът не съществува, връщаме грешка 404
+                String notFound = "404 Not Found";
+                exchange.sendResponseHeaders(404, notFound.length());
+                try (OutputStream os = exchange.getResponseBody()) {
+                    os.write(notFound.getBytes());
+                }
+            }
+        }
+    }
+
 
 }

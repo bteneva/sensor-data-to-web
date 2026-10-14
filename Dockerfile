@@ -10,6 +10,8 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
+COPY *.html *.js *.css ./
+
 # Казваме на Railway, че ще ползваме стандартния порт 8080 (или този от системата)
 ENV PORT=8080
 EXPOSE 8080
