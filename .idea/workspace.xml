@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca6ecf55-0532-41d5-bfbb-8ffb82d3a964" name="Changes" comment="Dockerfile change,">
+    <list default="true" id="ca6ecf55-0532-41d5-bfbb-8ffb82d3a964" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/air_quality.db" beforeDir="false" afterPath="$PROJECT_DIR$/air_quality.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/live.json" beforeDir="false" afterPath="$PROJECT_DIR$/live.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorDataToWeb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorDataToWeb.java" afterDir="false" />
@@ -175,7 +174,15 @@
       <option name="project" value="LOCAL" />
       <updated>1792000835810</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Feat: Serve index.html and static frontend files">
+      <option name="closed" value="true" />
+      <created>1792001120827</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1792001120827</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -196,6 +203,8 @@
     <MESSAGE value="Preparing for Railway - database link changed" />
     <MESSAGE value="Feat: Add built-in HTTP server for live.json" />
     <MESSAGE value="Dockerfile change" />
-    <option name="LAST_COMMIT_MESSAGE" value="Dockerfile change" />
+    <MESSAGE value="Dockerfile change," />
+    <MESSAGE value="Feat: Serve index.html and static frontend files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feat: Serve index.html and static frontend files" />
   </component>
 </project>

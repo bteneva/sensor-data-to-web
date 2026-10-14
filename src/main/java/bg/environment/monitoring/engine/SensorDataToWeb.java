@@ -38,7 +38,11 @@ import static bg.environment.monitoring.engine.PhpNodeEngine.getSofiaTime;
 public class SensorDataToWeb {
 
     //private static final String DB_URL = "jdbc:sqlite:air_quality.db";
-    private static final String DB_URL = "jdbc:sqlite:/app/data/air_quality.db";
+    // Проверява дали работи в Railway контейнер, ако не - ползва текущата папка
+    private static final String DB_URL = System.getenv("RAILWAY_ENVIRONMENT") != null
+            ? "jdbc:sqlite:/app/data/air_quality.db"
+            : "jdbc:sqlite:air_quality.db";
+
 
     private static final String DATA_URL =
             "https://meter.ac/gs/health/H82/data3.raw";
@@ -60,6 +64,33 @@ public class SensorDataToWeb {
             // Създаваме ендпоинт /live.json
             server.createContext("/live.json", new LiveJsonHandler());
             server.createContext("/", new StaticFileHandler());
+
+            server.createContext("/download-db", new HttpHandler() {
+                @Override
+                public void handle(HttpExchange exchange) throws IOException {
+                    // Пътят до базата данни в Railway
+                    java.io.File dbFile = new java.io.File("/app/data/air_quality.db");
+
+                    if (dbFile.exists()) {
+                        // Казваме на браузъра, че това е файл за изтегляне
+                        exchange.getResponseHeaders().set("Content-Disposition", "attachment; filename=air_quality.db");
+                        exchange.getResponseHeaders().set("Content-Type", "application/octet-stream");
+
+                        byte[] bytes = Files.readAllBytes(dbFile.toPath());
+                        exchange.sendResponseHeaders(200, bytes.length);
+                        try (OutputStream os = exchange.getResponseBody()) {
+                            os.write(bytes);
+                        }
+                    } else {
+                        // Ако файлът не е намерен (например локално)
+                        String error = "Базата данни не е намерена на този път.";
+                        exchange.sendResponseHeaders(404, error.length());
+                        try (OutputStream os = exchange.getResponseBody()) {
+                            os.write(error.getBytes());
+                        }
+                    }
+                }
+            });
 
             server.setExecutor(null); // ползва стандартния изпълнител
             server.start();
