@@ -40,6 +40,124 @@
         .wind-speed { font-weight: 600; color: #1a5276; }
         .wind-arrow-cell { text-align: center; }
         .wind-arrow-cell .wind-arrow { width: 26px; height: 26px; }
+
+        /* Адаптивен изглед за телефони */
+        * { box-sizing: border-box; }
+        img, svg { max-width: 100%; }
+        .container { width: 100%; min-width: 0; }
+        #alerts-container, #recent-container { min-width: 0; }
+
+        @media (max-width: 700px) {
+            body {
+                margin: 8px;
+                font-size: 14px;
+                line-height: 1.4;
+            }
+
+            .container { width: 100%; max-width: 100%; }
+
+            .card {
+                padding: 14px 12px;
+                margin-bottom: 12px;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+                line-height: 1.35;
+                text-align: left;
+            }
+
+            h3 {
+                font-size: 1.05rem;
+                line-height: 1.35;
+                margin-bottom: 12px;
+            }
+
+            .card p { font-size: 0.9rem; line-height: 1.5; }
+            .update-ts { font-size: 0.78rem; overflow-wrap: anywhere; }
+
+            /* Таблиците стават четими карти на тесен екран. */
+            #alerts-container table,
+            #recent-container table {
+                display: block;
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+            }
+
+            #alerts-container thead,
+            #recent-container thead { display: none; }
+
+            #alerts-container tbody,
+            #recent-container tbody { display: block; width: 100%; }
+
+            #alerts-container tr,
+            #recent-container tr {
+                display: block;
+                width: 100%;
+                margin: 0 0 12px;
+                padding: 8px 10px;
+                border: 1px solid #e3e8ee;
+                border-radius: 9px;
+                overflow: hidden;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            }
+
+            #alerts-container td,
+            #recent-container td {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 12px;
+                width: 100%;
+                padding: 8px 0;
+                border-bottom: 1px solid rgba(0,0,0,0.06);
+                text-align: right;
+                overflow-wrap: anywhere;
+                word-break: normal;
+            }
+
+            #alerts-container td:last-child,
+            #recent-container td:last-child { border-bottom: 0; }
+
+            #alerts-container td::before,
+            #recent-container td::before {
+                content: attr(data-label);
+                flex: 0 0 38%;
+                max-width: 38%;
+                text-align: left;
+                color: #64748b;
+                font-size: 0.78rem;
+                font-weight: 700;
+            }
+
+            .station-lbl {
+                display: inline-block;
+                max-width: 100%;
+                white-space: normal;
+                overflow-wrap: anywhere;
+                text-align: right;
+                font-size: 0.82rem;
+                padding: 4px 6px;
+            }
+
+            .badge { white-space: normal; font-size: 0.8rem; padding: 3px 6px; }
+            .wind-container { justify-content: flex-end; gap: 5px; }
+            .wind-arrow-cell { justify-content: flex-end !important; }
+            .wind-arrow-cell::before { content: "Посока на вятъра" !important; }
+            .no-alerts { padding: 12px; font-size: 0.9rem; }
+        }
+
+        @media (max-width: 380px) {
+            body { margin: 5px; }
+            .card { padding: 12px 9px; }
+            #alerts-container td::before,
+            #recent-container td::before { flex-basis: 34%; max-width: 34%; }
+            #alerts-container td,
+            #recent-container td { gap: 7px; font-size: 0.85rem; }
+        }
     </style>
 </head>
 <body>
@@ -283,11 +401,11 @@ function refreshDashboard() {
                     let windHtml = getWindWidget(p.wind_dir, p.wind_speed, p.wind_degree, { speedAsWords: true });
 
                     htmlAlerts += `<tr class="${rowClass}">
-                        <td><span class="station-lbl">📍 ${stationName}</span></td>
-                        <td><strong>${formattedTime}</strong></td>
-                        <td>${pm25Display}</td>
-                        <td>${pm10Display}</td>
-                        <td>${windHtml}</td>
+                        <td data-label="Станция"><span class="station-lbl">📍 ${stationName}</span></td>
+                        <td data-label="Дата и час"><strong>${formattedTime}</strong></td>
+                        <td data-label="PM2.5 (норма 25)">${pm25Display}</td>
+                        <td data-label="PM10 (норма 50)">${pm10Display}</td>
+                        <td data-label="Вятър">${windHtml}</td>
                     </tr>`;
                 });
                 htmlAlerts += '</tbody></table>';
@@ -341,14 +459,14 @@ function refreshDashboard() {
 
                     htmlRecent += `
                     <tr class="${rowClass}">
-                        <td><span class="station-lbl">📍 ${stationName}</span></td>
-                        <td>📅 ${formattedTime}</td>
-                        <td style="${pm25Style}">${Math.round(r.pm25)} µg/m³</td>
-                        <td style="${pm10Style}">${Math.round(r.pm10)} µg/m³</td>
-                        <td>🌡️ ${Math.round(r.temp)} °C</td>
-                        <td>💧 ${Math.round(r.humidity)} %</td>
-                        <td class="wind-arrow-cell">${arrowHtml}</td>
-                        <td>
+                        <td data-label="Станция"><span class="station-lbl">📍 ${stationName}</span></td>
+                        <td data-label="Дата и час">📅 ${formattedTime}</td>
+                        <td data-label="PM2.5" style="${pm25Style}">${Math.round(r.pm25)} µg/m³</td>
+                        <td data-label="PM10" style="${pm10Style}">${Math.round(r.pm10)} µg/m³</td>
+                        <td data-label="Температура">🌡️ ${Math.round(r.temp)} °C</td>
+                        <td data-label="Влажност">💧 ${Math.round(r.humidity)} %</td>
+                        <td data-label="Посока на вятъра" class="wind-arrow-cell">${arrowHtml}</td>
+                        <td data-label="Вятър">
                             <!-- Изписване на изчислената посока на екрана -->
                                 <span>💨 ${windDirectionText}</span>
                                 <small style="color: #666;">(${windSpeedText})</small>

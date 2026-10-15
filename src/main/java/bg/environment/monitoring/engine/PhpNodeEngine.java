@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PhpNodeEngine {
-    //private static final String DB_URL = "jdbc:sqlite:air_quality.db";
-    private static final String DB_URL = "jdbc:sqlite:/app/data/air_quality.db";
-
+    private static final String DB_URL = System.getenv("RAILWAY_ENVIRONMENT") != null
+            ? "jdbc:sqlite:/app/data/air_quality.db"
+            : "jdbc:sqlite:air_quality.db";
     private static final ZoneId BG_ZONE = ZoneId.of("Europe/Sofia");
 
     private record PhpStation(String name, String dataUrl) {}

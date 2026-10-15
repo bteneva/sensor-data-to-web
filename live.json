@@ -1,6 +1,339 @@
 {
   "alerts": [
     {
+      "wind_degree": 346.0,
+      "pm25": 31.0,
+      "pm10": 43.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 9.7,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:09:29"
+    },
+    {
+      "wind_degree": 346.0,
+      "pm25": 34.0,
+      "pm10": 47.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 9.7,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:04:29"
+    },
+    {
+      "wind_degree": 354.0,
+      "pm25": 30.0,
+      "pm10": 42.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.1,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-15 01:59:29"
+    },
+    {
+      "wind_degree": 354.0,
+      "pm25": 39.0,
+      "pm10": 53.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.1,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-15 01:49:29"
+    },
+    {
+      "wind_degree": 354.0,
+      "pm25": 34.0,
+      "pm10": 47.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.1,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-15 01:44:29"
+    },
+    {
+      "wind_degree": 354.0,
+      "pm25": 38.0,
+      "pm10": 52.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.1,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-15 00:59:29"
+    },
+    {
+      "wind_degree": 354.0,
+      "pm25": 31.0,
+      "pm10": 43.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.1,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-15 00:44:29"
+    },
+    {
+      "wind_degree": 354.0,
+      "pm25": 29.0,
+      "pm10": 39.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.1,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-15 00:29:29"
+    },
+    {
+      "wind_degree": 354.0,
+      "pm25": 38.0,
+      "pm10": 52.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.1,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-15 00:19:29"
+    },
+    {
+      "wind_degree": 354.0,
+      "pm25": 44.0,
+      "pm10": 59.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.1,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-15 00:04:29"
+    },
+    {
+      "wind_degree": 10.0,
+      "pm25": 34.0,
+      "pm10": 47.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.4,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 23:54:29"
+    },
+    {
+      "wind_degree": 10.0,
+      "pm25": 38.0,
+      "pm10": 52.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.4,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 23:49:29"
+    },
+    {
+      "wind_degree": 10.0,
+      "pm25": 35.0,
+      "pm10": 48.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.4,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 23:44:29"
+    },
+    {
+      "wind_degree": 10.0,
+      "pm25": 28.0,
+      "pm10": 38.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.4,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 23:39:29"
+    },
+    {
+      "wind_degree": 10.0,
+      "pm25": 44.0,
+      "pm10": 59.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.4,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 23:34:29"
+    },
+    {
+      "wind_degree": 10.0,
+      "pm25": 37.0,
+      "pm10": 50.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.4,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 23:24:29"
+    },
+    {
+      "wind_degree": 10.0,
+      "pm25": 35.0,
+      "pm10": 48.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.4,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 23:19:29"
+    },
+    {
+      "wind_degree": 10.0,
+      "pm25": 28.0,
+      "pm10": 38.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.4,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 23:14:29"
+    },
+    {
+      "wind_degree": 10.0,
+      "pm25": 31.0,
+      "pm10": 43.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.4,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 23:09:29"
+    },
+    {
+      "wind_degree": 10.0,
+      "pm25": 47.0,
+      "pm10": 64.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.4,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 23:04:29"
+    },
+    {
+      "wind_degree": 10.0,
+      "pm25": 37.0,
+      "pm10": 50.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.4,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 22:59:29"
+    },
+    {
+      "wind_degree": 356.0,
+      "pm25": 32.0,
+      "pm10": 44.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 11.5,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 22:54:29"
+    },
+    {
+      "wind_degree": 356.0,
+      "pm25": 32.0,
+      "pm10": 44.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 11.5,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 22:49:29"
+    },
+    {
+      "wind_degree": 356.0,
+      "pm25": 37.0,
+      "pm10": 50.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 11.5,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 22:44:29"
+    },
+    {
+      "wind_degree": 356.0,
+      "pm25": 38.0,
+      "pm10": 52.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 11.5,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 22:34:29"
+    },
+    {
+      "wind_degree": 357.0,
+      "pm25": 36.0,
+      "pm10": 49.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.8,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 22:29:29"
+    },
+    {
+      "wind_degree": 357.0,
+      "pm25": 36.0,
+      "pm10": 49.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.8,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 22:24:29"
+    },
+    {
+      "wind_degree": 357.0,
+      "pm25": 39.0,
+      "pm10": 53.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.8,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 22:19:28"
+    },
+    {
+      "wind_degree": 357.0,
+      "pm25": 38.0,
+      "pm10": 52.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.8,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 22:14:28"
+    },
+    {
+      "wind_degree": 357.0,
+      "pm25": 56.0,
+      "pm10": 75.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.8,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 22:09:28"
+    },
+    {
+      "wind_degree": 357.0,
+      "pm25": 34.0,
+      "pm10": 47.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.8,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 22:04:28"
+    },
+    {
+      "wind_degree": 357.0,
+      "pm25": 33.0,
+      "pm10": 45.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 10.8,
+      "wind_dir": "Северен (С)",
+      "timestamp": "2026-10-14 21:59:28"
+    },
+    {
+      "wind_degree": 11.0,
+      "pm25": 34.0,
+      "pm10": 47.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 11.2,
+      "wind_dir": "Север-североизток (С-СИ)",
+      "timestamp": "2026-10-14 21:54:28"
+    },
+    {
+      "wind_degree": 11.0,
+      "pm25": 35.0,
+      "pm10": 48.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 11.2,
+      "wind_dir": "Север-североизток (С-СИ)",
+      "timestamp": "2026-10-14 21:49:28"
+    },
+    {
+      "wind_degree": 11.0,
+      "pm25": 27.0,
+      "pm10": 37.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 11.2,
+      "wind_dir": "Север-североизток (С-СИ)",
+      "timestamp": "2026-10-14 21:44:28"
+    },
+    {
+      "wind_degree": 11.0,
+      "pm25": 33.0,
+      "pm10": 45.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 11.2,
+      "wind_dir": "Север-североизток (С-СИ)",
+      "timestamp": "2026-10-14 21:34:28"
+    },
+    {
+      "wind_degree": 11.0,
+      "pm25": 34.0,
+      "pm10": 47.0,
+      "station": "Шатрово (N329)",
+      "wind_speed": 11.2,
+      "wind_dir": "Север-североизток (С-СИ)",
+      "timestamp": "2026-10-14 21:29:28"
+    },
+    {
       "wind_degree": 11.0,
       "pm25": 49.0,
       "pm10": 66.0,
@@ -361,180 +694,180 @@
       "timestamp": "2026-10-13 04:29:24"
     }
   ],
-  "last_updated": "2026-10-14 21:24:24.574516200",
+  "last_updated": "2026-10-15 02:44:04.185281300",
   "recent": [
     {
-      "temp": 5.7,
-      "wind_degree": 11.0,
-      "pm25": 3.08,
-      "pm10": 4.1,
-      "station": "Дупница - Град (43449)",
-      "humidity": 74.0,
-      "wind_speed": 11.2,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:21:29"
-    },
-    {
-      "temp": 8.4,
-      "wind_degree": 11.0,
-      "pm25": 9.3,
-      "pm10": 9.3,
+      "temp": 5.3,
+      "wind_degree": 346.0,
+      "pm25": 6.2,
+      "pm10": 6.2,
       "station": "Големо село 1 (H82)",
-      "humidity": 61.3,
-      "wind_speed": 11.2,
-      "pressure": 967.6,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:20:01"
+      "humidity": 67.27,
+      "wind_speed": 9.7,
+      "pressure": 968.7,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:40:01"
     },
     {
-      "temp": 9.3,
-      "wind_degree": 11.0,
+      "temp": 3.8,
+      "wind_degree": 346.0,
+      "pm25": 3.33,
+      "pm10": 5.18,
+      "station": "Дупница - Град (43449)",
+      "humidity": 80.0,
+      "wind_speed": 9.7,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:39:35"
+    },
+    {
+      "temp": 6.5,
+      "wind_degree": 346.0,
       "pm25": 1.0,
       "pm10": 2.0,
       "station": "Големо село 2 (N321)",
-      "humidity": 51.0,
-      "wind_speed": 11.2,
-      "pressure": 966.7,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:19:26"
+      "humidity": 55.0,
+      "wind_speed": 9.7,
+      "pressure": 967.3,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:39:26"
     },
     {
-      "temp": 9.4,
-      "wind_degree": 11.0,
-      "pm25": 5.0,
-      "pm10": 7.0,
+      "temp": 7.4,
+      "wind_degree": 346.0,
+      "pm25": 8.0,
+      "pm10": 11.0,
       "station": "Баланово (N330)",
-      "humidity": 52.0,
-      "wind_speed": 11.2,
-      "pressure": 971.2,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:19:21"
+      "humidity": 54.0,
+      "wind_speed": 9.7,
+      "pressure": 971.6,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:39:22"
     },
     {
-      "temp": 5.7,
-      "wind_degree": 11.0,
+      "temp": 3.8,
+      "wind_degree": 346.0,
+      "pm25": 2.2,
+      "pm10": 3.05,
+      "station": "Мало/Големо село - ТЕЦ (97673)",
+      "humidity": 80.0,
+      "wind_speed": 9.7,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:35:33"
+    },
+    {
+      "temp": 6.6,
+      "wind_degree": 346.0,
+      "pm25": 2.0,
+      "pm10": 3.0,
+      "station": "Големо село 2 (N321)",
+      "humidity": 55.0,
+      "wind_speed": 9.7,
+      "pressure": 967.2,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:34:26"
+    },
+    {
+      "temp": 7.2,
+      "wind_degree": 346.0,
+      "pm25": 11.0,
+      "pm10": 15.0,
+      "station": "Баланово (N330)",
+      "humidity": 54.0,
+      "wind_speed": 9.7,
+      "pressure": 971.7,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:34:22"
+    },
+    {
+      "temp": 3.8,
+      "wind_degree": 346.0,
       "pm25": 2.5,
-      "pm10": 3.38,
-      "station": "Мало/Големо село - ТЕЦ (97673)",
-      "humidity": 74.0,
-      "wind_speed": 11.2,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:18:52"
-    },
-    {
-      "temp": 5.7,
-      "wind_degree": 11.0,
-      "pm25": 3.3,
-      "pm10": 3.72,
+      "pm10": 4.63,
       "station": "Дупница - Град (43449)",
-      "humidity": 74.0,
-      "wind_speed": 11.2,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:18:43"
+      "humidity": 80.0,
+      "wind_speed": 9.7,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:33:48"
     },
     {
-      "temp": 9.8,
-      "wind_degree": 47.6,
-      "pm25": 3.4,
-      "pm10": 4.1,
-      "station": "ТЕЦ Бобов дол - Големо село",
-      "humidity": 74.14,
-      "wind_speed": 4.680000000000001,
-      "pressure": 964.8,
-      "timestamp": "2026-10-14 21:15:00"
-    },
-    {
-      "temp": 9.3,
-      "wind_degree": 11.0,
-      "pm25": 2.0,
-      "pm10": 3.0,
-      "station": "Големо село 2 (N321)",
-      "humidity": 51.0,
-      "wind_speed": 11.2,
-      "pressure": 966.7,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:14:26"
-    },
-    {
-      "temp": 9.4,
-      "wind_degree": 11.0,
-      "pm25": 6.0,
-      "pm10": 8.0,
-      "station": "Баланово (N330)",
-      "humidity": 52.0,
-      "wind_speed": 11.2,
-      "pressure": 971.2,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:14:21"
-    },
-    {
-      "temp": 5.7,
-      "wind_degree": 11.0,
-      "pm25": 2.78,
-      "pm10": 3.03,
+      "temp": 3.8,
+      "wind_degree": 346.0,
+      "pm25": 2.17,
+      "pm10": 3.63,
       "station": "Мало/Големо село - ТЕЦ (97673)",
-      "humidity": 74.0,
-      "wind_speed": 11.2,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:13:36"
+      "humidity": 80.0,
+      "wind_speed": 9.7,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:30:24"
     },
     {
-      "temp": 5.7,
-      "wind_degree": 11.0,
-      "pm25": 2.75,
-      "pm10": 4.65,
-      "station": "Дупница - Град (43449)",
-      "humidity": 74.0,
-      "wind_speed": 11.2,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:12:49"
-    },
-    {
-      "temp": 8.4,
-      "wind_degree": 11.0,
-      "pm25": 15.5,
-      "pm10": 15.5,
+      "temp": 5.2,
+      "wind_degree": 346.0,
+      "pm25": 6.7,
+      "pm10": 6.7,
       "station": "Големо село 1 (H82)",
-      "humidity": 60.93,
-      "wind_speed": 11.2,
-      "pressure": 967.7,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:10:01"
+      "humidity": 67.89,
+      "wind_speed": 9.7,
+      "pressure": 968.6,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:30:01"
     },
     {
-      "temp": 9.7,
-      "wind_degree": 40.36,
-      "pm25": 3.4,
-      "pm10": 4.16,
-      "station": "ТЕЦ Бобов дол - Големо село",
-      "humidity": 74.42,
-      "wind_speed": 4.968000000000001,
-      "pressure": 964.8,
-      "timestamp": "2026-10-14 21:10:00"
-    },
-    {
-      "temp": 9.3,
-      "wind_degree": 11.0,
+      "temp": 6.6,
+      "wind_degree": 346.0,
       "pm25": 2.0,
       "pm10": 3.0,
       "station": "Големо село 2 (N321)",
-      "humidity": 51.0,
-      "wind_speed": 11.2,
-      "pressure": 966.8,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:09:26"
+      "humidity": 55.0,
+      "wind_speed": 9.7,
+      "pressure": 967.3,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:29:26"
     },
     {
-      "temp": 9.4,
-      "wind_degree": 11.0,
-      "pm25": 5.0,
-      "pm10": 7.0,
+      "temp": 7.1,
+      "wind_degree": 346.0,
+      "pm25": 10.0,
+      "pm10": 13.0,
       "station": "Баланово (N330)",
-      "humidity": 53.0,
-      "wind_speed": 11.2,
-      "pressure": 971.3,
-      "wind_dir": "Север-североизток (С-СИ)",
-      "timestamp": "2026-10-14 21:09:22"
+      "humidity": 55.0,
+      "wind_speed": 9.7,
+      "pressure": 971.9,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:29:22"
+    },
+    {
+      "temp": 3.8,
+      "wind_degree": 346.0,
+      "pm25": 2.3,
+      "pm10": 4.6,
+      "station": "Дупница - Град (43449)",
+      "humidity": 80.0,
+      "wind_speed": 9.7,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:27:56"
+    },
+    {
+      "temp": 3.8,
+      "wind_degree": 346.0,
+      "pm25": 2.53,
+      "pm10": 3.97,
+      "station": "Мало/Големо село - ТЕЦ (97673)",
+      "humidity": 80.0,
+      "wind_speed": 9.7,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:25:07"
+    },
+    {
+      "temp": 3.8,
+      "wind_degree": 346.0,
+      "pm25": 2.6,
+      "pm10": 4.82,
+      "station": "Дупница - Град (43449)",
+      "humidity": 80.0,
+      "wind_speed": 9.7,
+      "wind_dir": "Север-северозапад (С-СЗ)",
+      "timestamp": "2026-10-15 02:25:00"
     }
   ]
 }

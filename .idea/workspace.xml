@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca6ecf55-0532-41d5-bfbb-8ffb82d3a964" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/air_quality.db" beforeDir="false" afterPath="$PROJECT_DIR$/air_quality.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/live.json" beforeDir="false" afterPath="$PROJECT_DIR$/live.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorDataToWeb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bg/environment/monitoring/engine/SensorDataToWeb.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,7 +180,15 @@
       <option name="project" value="LOCAL" />
       <updated>1792001120827</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Feat: Add /download-db endpoint to easily back up SQLite file">
+      <option name="closed" value="true" />
+      <created>1792002275044</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1792002275044</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -205,6 +211,7 @@
     <MESSAGE value="Dockerfile change" />
     <MESSAGE value="Dockerfile change," />
     <MESSAGE value="Feat: Serve index.html and static frontend files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feat: Serve index.html and static frontend files" />
+    <MESSAGE value="Feat: Add /download-db endpoint to easily back up SQLite file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feat: Add /download-db endpoint to easily back up SQLite file" />
   </component>
 </project>
